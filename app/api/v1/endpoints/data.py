@@ -1,5 +1,6 @@
 from typing import Any
 from pydantic import BaseModel, Field
+from app.db.database import db_manager
 from fastapi import APIRouter, HTTPException
 from app.services.market_data import market_data_pipeline
 
@@ -36,4 +37,21 @@ def sync_market_data(params: MarketRequestFields) -> dict[str, Any]:
             "ticker": params.ticker,
             "interval": params.interval,
             "rows_processed": rows_inserted,
+        }
+
+@router.get("/verify")
+def table_verfication():
+    """
+    Verify tables have been created (Where applicable) and populated once sync_market_data has run.
+    """
+    tables: list[str] = db_manager.table_verification()
+    if len(tables) > 0:
+        return {
+            "status": "success",
+            "tables": tables
+        }
+    else:
+        return {
+            "status": "failure",
+            "tables": []
         }

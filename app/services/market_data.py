@@ -5,7 +5,6 @@ from app.db.database import db_manager
 EXPECTED_SCHEMA: list[str] = [
     "timestamp",
     "symbol",
-    "interval",
     "open",
     "high",
     "low",
@@ -39,9 +38,6 @@ def market_data_pipeline(ticker: str|list[str], interval: str) -> int:
     if "symbol" not in df.columns:
         df["symbol"] = ticker if isinstance(ticker, str) else ticker[0]
 
-    if "interval" not in df.columns:
-        df["interval"] = interval
-
     if df["timestamp"].dt.tz is not None:
         df["timestamp"] = df["timestamp"].dt.tz_convert("UTC").dt.tz_localize(None)
 
@@ -52,7 +48,6 @@ def market_data_pipeline(ticker: str|list[str], interval: str) -> int:
     df: pd.DataFrame = df.astype({
         "timestamp": "datetime64[ns]",
         "symbol": "string",
-        'interval': "string",
         "open": "float64",
         "high": "float64",
         "low": "float64",
@@ -62,6 +57,6 @@ def market_data_pipeline(ticker: str|list[str], interval: str) -> int:
 
     # Clean DF and pass to db_manager to handle ingestion.
     cleaned_df: pd.DataFrame = df.dropna()
-    db_manager._ingest_data(cleaned_df)
+    db_manager._ingest_data(df=cleaned_df, interval=interval)
 
     return len(cleaned_df)
