@@ -1,0 +1,25 @@
+[project]
+name = "backtester2-0"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "mchia", email = "michaelchia616@gmail.com" }
+]
+requires-python = ">=3.15"
+dependencies = [
+    "duckdb>=2.0.0",
+    "fastapi[standard]>=0.162.5",
+    "pandas>=3.1.1",
+    "pydantic>=2.14.3",
+    "uvicorn>=0.54.0",
+    "vectorbt>=1.2.1",
+    "yfinance>=1.8.0",
+]
+
+[project.scripts]
+backtester2-0 = "backtester2_0:main"
+
+[build-system]
+requires = ["uv_build>=0.13.8,<0.14.0"]
+build-backend = "uv_build"
